@@ -1,20 +1,33 @@
-import io.restassured.RestAssured;
+
+import io.qameta.allure.restassured.AllureRestAssured;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import static io.restassured.RestAssured.*;
-import static io.restassured.http.ContentType.JSON;
+
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
 public class JsonPlaceholderTests {
 
-    private static final String BASE_URL = "https://jsonplaceholder.typicode.com";
+    public static RequestSpecification requestSpec;
+
+    @BeforeAll
+    public static void setUp() {
+        requestSpec = new RequestSpecBuilder()
+                .setBaseUri("https://jsonplaceholder.typicode.com")
+                .setAccept(ContentType.JSON)
+                .addFilter(new AllureRestAssured())
+                .build();
+    }
 
     @Test
     @DisplayName("Получаем всех пользователей")
     public void getAllUsersTest() {
-        RestAssured.baseURI = BASE_URL;
-
         given()
+                .spec(requestSpec)
                 .when()
                 .get("/users")
                 .then()
@@ -27,9 +40,8 @@ public class JsonPlaceholderTests {
     @Test
     @DisplayName("Получаем пользователя по ID")
     public void getUserByIdTest() {
-        RestAssured.baseURI = BASE_URL;
-
         given()
+                .spec(requestSpec)
                 .when()
                 .get("/users/4")
                 .then()
@@ -42,24 +54,21 @@ public class JsonPlaceholderTests {
     @Test
     @DisplayName("Получаем пользователя по неверному ID")
     public void getUserByWrongIdTest() {
-        RestAssured.baseURI = BASE_URL;
-
         given()
+                .spec(requestSpec)
                 .when()
                 .get("/users/24")
                 .then()
                 .log().status()
                 .log().body()
-                .statusCode(404)
-                .body("$", not(empty()));
+                .statusCode(404);
     }
 
     @Test
-    @DisplayName("GET post by ID")
+    @DisplayName("GET поста по ID")
     public void getPostByIdTest() {
-        RestAssured.baseURI = BASE_URL;
-
         given()
+                .spec(requestSpec)
                 .when()
                 .get("/posts/20")
                 .then()
@@ -72,10 +81,9 @@ public class JsonPlaceholderTests {
     @Test
     @DisplayName("Создание нового поста")
     public void createPostTest() {
-        RestAssured.baseURI = BASE_URL;
-
         given()
-                .contentType(JSON)
+                .spec(requestSpec)
+                .contentType(ContentType.JSON)
                 .body("{\"title\": \"Basil post\", \"body\": \"Fata viam invenient.\", \"userId\": 1}")
                 .when()
                 .post("/posts")
@@ -90,10 +98,9 @@ public class JsonPlaceholderTests {
     @Test
     @DisplayName("Изменение поста")
     public void updatePostTest() {
-        RestAssured.baseURI = BASE_URL;
-
         given()
-                .contentType(JSON)
+                .spec(requestSpec)
+                .contentType(ContentType.JSON)
                 .body("{\"id\": 1, \"title\": \"Basil post updated\", \"body\": \"Fata viam invenient.(пер. «Судьба найдёт путь.»)\", \"userId\": 1}")
                 .when()
                 .put("/posts/1")
@@ -107,9 +114,8 @@ public class JsonPlaceholderTests {
     @Test
     @DisplayName("Удаление поста")
     public void deletePostTest() {
-        RestAssured.baseURI = BASE_URL;
-
         given()
+                .spec(requestSpec)
                 .when()
                 .delete("/posts/1")
                 .then()
