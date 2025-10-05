@@ -115,6 +115,6 @@ public class JsonPlaceholderTests {
                 .then()
                 .log().status()
                 .log().body()
-                .statusCode(200); // JSONPlaceholder возвращает 200 даже при удалении
+                .statusCode(200);
     }
 }
