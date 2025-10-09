@@ -4,9 +4,8 @@ import lombok.Data;
 
 @Data
 public class ResponceLomboktUpdatePostTest {
-    private String id;
+    private int id;
     private String title;
     private String body;
-    private String userId;
+    private int userId;
 }
-

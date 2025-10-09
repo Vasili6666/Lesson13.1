@@ -1,15 +1,15 @@
 package models.lombok;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class BodyLombokModelsUpdatePostTest {
+@AllArgsConstructor
+public class ResponseLombokPostByIdTest {
+    private int userId;
     private int id;
     private String title;
     private String body;
-    private int userId;
 }
