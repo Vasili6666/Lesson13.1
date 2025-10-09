@@ -1,14 +1,18 @@
+package tests;
 
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
+import models.BodyModelsUpdatePostTest;
+import models.RequestUpdatePostTest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class JsonPlaceholderTests {
 
@@ -81,7 +85,7 @@ public class JsonPlaceholderTests {
     @Test
     @DisplayName("Создание нового поста")
     public void createPostTest() {
-        given()
+      given()
                 .spec(requestSpec)
                 .contentType(ContentType.JSON)
                 .body("{\"title\": \"Basil post\", \"body\": \"Fata viam invenient.\", \"userId\": 1}")
@@ -98,17 +102,28 @@ public class JsonPlaceholderTests {
     @Test
     @DisplayName("Изменение поста")
     public void updatePostTest() {
-        given()
+
+        BodyModelsUpdatePostTest data = new BodyModelsUpdatePostTest();
+        data.setId("1");
+        data.setTitle("Basil post updated");
+        data.setBody("Fata viam invenient.(пер. «Судьба найдёт путь.»)");
+        data.setUserId("1");
+
+        RequestUpdatePostTest response = given()
                 .spec(requestSpec)
                 .contentType(ContentType.JSON)
-                .body("{\"id\": 1, \"title\": \"Basil post updated\", \"body\": \"Fata viam invenient.(пер. «Судьба найдёт путь.»)\", \"userId\": 1}")
+                .body(data)
                 .when()
                 .put("/posts/1")
                 .then()
                 .log().status()
                 .log().body()
                 .statusCode(200)
-                .body("title", is("Basil post updated"));
+                .extract()
+                .as(RequestUpdatePostTest.class);
+
+        assertEquals("Basil post updated", response.getTitle(), "Заголовок поста не совпадает!");
+        assertEquals("1", response.getUserId(), "userId должен быть равен 1");
     }
 
     @Test
