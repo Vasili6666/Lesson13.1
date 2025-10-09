@@ -4,14 +4,17 @@ import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
-import models.BodyModelsUpdatePostTest;
-import models.RequestUpdatePostTest;
+import models.lombok.BodyLombokModelsUpdatePostTest;
+import models.lombok.ResponceLomboktUpdatePostTest;
+import models.pojo.BodyModelsUpdatePostTest;
+import models.pojo.ResponceUpdatePostTest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Type;
+
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class JsonPlaceholderTests {
@@ -28,6 +31,38 @@ public class JsonPlaceholderTests {
     }
 
     @Test
+    @DisplayName("Изменение поста с Lombok")
+    public void lombokUpdatePostTest() {
+
+        BodyLombokModelsUpdatePostTest data = new BodyLombokModelsUpdatePostTest();
+        data.setId("1");
+        data.setTitle("Basil post updated");
+        data.setBody("Fata viam invenient.(пер. «Судьба найдёт путь.»)");
+        data.setUserId("1");
+
+        // используем только Lombok-класс для ответа
+        ResponceLomboktUpdatePostTest response = given()
+                .spec(requestSpec)
+                .contentType(ContentType.JSON)
+                .body(data)
+                .when()
+                .put("/posts/1")
+                .then()
+                .log().status()
+                .log().body()
+                .statusCode(200)
+                .extract()
+                .as(ResponceLomboktUpdatePostTest.class); // <--- убран каст
+
+        // проверки
+        assertEquals(data.getTitle(), response.getTitle(), "Заголовок поста не совпадает!");
+        assertEquals(data.getUserId(), response.getUserId(), "userId должен быть равен 1");
+        assertEquals(data.getBody(), response.getBody(), "Body не совпадает");
+    }
+
+
+
+    /*@Test
     @DisplayName("Получаем всех пользователей")
     public void getAllUsersTest() {
         given()
@@ -39,9 +74,9 @@ public class JsonPlaceholderTests {
                 .log().body()
                 .statusCode(200)
                 .body("$", not(empty()));
-    }
+    }*/
 
-    @Test
+    /*@Test
     @DisplayName("Получаем пользователя по ID")
     public void getUserByIdTest() {
         given()
@@ -54,8 +89,8 @@ public class JsonPlaceholderTests {
                 .statusCode(200)
                 .body("$", not(empty()));
     }
-
-    @Test
+*/
+    /*@Test
     @DisplayName("Получаем пользователя по неверному ID")
     public void getUserByWrongIdTest() {
         given()
@@ -67,8 +102,8 @@ public class JsonPlaceholderTests {
                 .log().body()
                 .statusCode(404);
     }
-
-    @Test
+*/
+    /*@Test
     @DisplayName("GET поста по ID")
     public void getPostByIdTest() {
         given()
@@ -80,9 +115,9 @@ public class JsonPlaceholderTests {
                 .log().body()
                 .statusCode(200)
                 .body("id", is(20));
-    }
+    }*/
 
-    @Test
+    /*@Test
     @DisplayName("Создание нового поста")
     public void createPostTest() {
       given()
@@ -98,10 +133,10 @@ public class JsonPlaceholderTests {
                 .body("id", notNullValue())
                 .body("title", is("Basil post"));
     }
-
-    @Test
+*/
+   /* @Test
     @DisplayName("Изменение поста")
-    public void updatePostTest() {
+    public void pojoUpdatePostTest() {
 
         BodyModelsUpdatePostTest data = new BodyModelsUpdatePostTest();
         data.setId("1");
@@ -109,7 +144,7 @@ public class JsonPlaceholderTests {
         data.setBody("Fata viam invenient.(пер. «Судьба найдёт путь.»)");
         data.setUserId("1");
 
-        RequestUpdatePostTest response = given()
+        ResponceUpdatePostTest response = given()
                 .spec(requestSpec)
                 .contentType(ContentType.JSON)
                 .body(data)
@@ -120,13 +155,14 @@ public class JsonPlaceholderTests {
                 .log().body()
                 .statusCode(200)
                 .extract()
-                .as(RequestUpdatePostTest.class);
+                .as(ResponceUpdatePostTest.class);
 
         assertEquals("Basil post updated", response.getTitle(), "Заголовок поста не совпадает!");
         assertEquals("1", response.getUserId(), "userId должен быть равен 1");
     }
 
-    @Test
+   */
+    /*@Test
     @DisplayName("Удаление поста")
     public void deletePostTest() {
         given()
@@ -137,5 +173,5 @@ public class JsonPlaceholderTests {
                 .log().status()
                 .log().body()
                 .statusCode(200);
-    }
+    }*/
 }

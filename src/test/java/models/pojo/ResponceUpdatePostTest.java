@@ -1,8 +1,11 @@
-package models;
+package models.pojo;
 
-public class BodyModelsUpdatePostTest {
+public class ResponceUpdatePostTest {
 
-    String id, title, body, userId;
+    private String id;
+    private String title;
+    private String body;
+    private String userId;
 
     public String getId() {
         return id;
@@ -35,10 +38,4 @@ public class BodyModelsUpdatePostTest {
     public void setUserId(String userId) {
         this.userId = userId;
     }
-
-
-
-
-
-
 }
