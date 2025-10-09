@@ -4,10 +4,8 @@ import lombok.Data;
 
 @Data
 public class BodyLombokModelsUpdatePostTest {
-
-    String id, title, body, userId;
-
-
-
-
+    private String id;
+    private String title;
+    private String body;
+    private String userId;
 }

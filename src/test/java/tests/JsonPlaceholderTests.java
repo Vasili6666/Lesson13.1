@@ -6,16 +6,15 @@ import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import models.lombok.BodyLombokModelsUpdatePostTest;
 import models.lombok.ResponceLomboktUpdatePostTest;
-import models.pojo.BodyModelsUpdatePostTest;
-import models.pojo.ResponceUpdatePostTest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Type;
-
+import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static specs.UpdatePostSpecs.updatePostRequestSpec;
+import static specs.UpdatePostSpecs.updatePostResponseSpec;
 
 public class JsonPlaceholderTests {
 
@@ -40,24 +39,24 @@ public class JsonPlaceholderTests {
         data.setBody("Fata viam invenient.(пер. «Судьба найдёт путь.»)");
         data.setUserId("1");
 
-        // используем только Lombok-класс для ответа
-        ResponceLomboktUpdatePostTest response = given()
+        ResponceLomboktUpdatePostTest response = step("Make request", ()->
+          given(updatePostRequestSpec)
                 .spec(requestSpec)
-                .contentType(ContentType.JSON)
                 .body(data)
                 .when()
-                .put("/posts/1")
+                .put()
                 .then()
-                .log().status()
-                .log().body()
-                .statusCode(200)
+                .spec(updatePostResponseSpec)
                 .extract()
-                .as(ResponceLomboktUpdatePostTest.class); // <--- убран каст
+                .as(ResponceLomboktUpdatePostTest.class)
+        );
 
-        // проверки
+
+        step("Check Responce", ()-> {
         assertEquals(data.getTitle(), response.getTitle(), "Заголовок поста не совпадает!");
         assertEquals(data.getUserId(), response.getUserId(), "userId должен быть равен 1");
         assertEquals(data.getBody(), response.getBody(), "Body не совпадает");
+        });
     }
 
 
@@ -146,8 +145,12 @@ public class JsonPlaceholderTests {
 
         ResponceUpdatePostTest response = given()
                 .spec(requestSpec)
-                .contentType(ContentType.JSON)
+                .filter(new AllureRestAssured())
+                .log().uri()
+                .log().body()
+                .log().headers()
                 .body(data)
+                .contentType(ContentType.JSON)
                 .when()
                 .put("/posts/1")
                 .then()
@@ -160,8 +163,7 @@ public class JsonPlaceholderTests {
         assertEquals("Basil post updated", response.getTitle(), "Заголовок поста не совпадает!");
         assertEquals("1", response.getUserId(), "userId должен быть равен 1");
     }
-
-   */
+*/
     /*@Test
     @DisplayName("Удаление поста")
     public void deletePostTest() {
