@@ -15,18 +15,3 @@ public class PostByIdSpec {
 
     public static ResponseSpecification postByIdResponseSpec = baseResponseSpec;
 }
-/*
-package specs;
-
-import static io.restassured.RestAssured.with;
-
-public class PostByIdSpec {
-
-    public static final io.restassured.specification.RequestSpecification postByIdRequestSpec =
-            with().spec(BaseSpecs.baseRequestSpec)
-                    .basePath("/posts/20"); // id поста можно менять
-
-    public static final io.restassured.specification.ResponseSpecification postByIdResponseSpec =
-            BaseSpecs.baseResponseSpec;
-}
-*/
