@@ -1,31 +1,26 @@
 package tests;
 
-import models.lombok.BodyLombokModelsUpdatePostTest;
-import models.lombok.ResponceLomboktUpdatePostTest;
-import models.lombok.ResponseLombokPostByIdTest;
+
+import models.lombok.BaseModel;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import static specs.Specs.jsonPlaceholderRequestSpec;
 import static specs.Specs.responseSpec;
 
-public class JsonPlaceholderTests extends TestBase{
+public class JsonPlaceholderTests extends TestBase {
 
     @Test
     @DisplayName("Изменение поста с Lombok (PUT /posts/1)")
     public void lombokUpdatePostTest() {
-        BodyLombokModelsUpdatePostTest data = new BodyLombokModelsUpdatePostTest(1,
-                "Basil post updated",
-                "Fata viam invenient. (пер. «Судьба найдёт путь.»)",
-                1);
+        BaseModel data = new BaseModel(1, "Basil post updated",
+                "Fata viam invenient. (пер. «Судьба найдёт путь.»)", 1);
 
-        ResponceLomboktUpdatePostTest response = step("Выполняем PUT-запрос", () ->
+        BaseModel response = step("Выполняем PUT-запрос", () ->
                 given(jsonPlaceholderRequestSpec)
                         .body(data)
                         .when()
@@ -33,7 +28,7 @@ public class JsonPlaceholderTests extends TestBase{
                         .then()
                         .spec(responseSpec(200))
                         .extract()
-                        .as(ResponceLomboktUpdatePostTest.class)
+                        .as(BaseModel.class)
         );
 
         step("Проверяем ответ", () -> {
@@ -46,14 +41,14 @@ public class JsonPlaceholderTests extends TestBase{
     @Test
     @DisplayName("GET поста по ID")
     public void getPostByIdTest() {
-        ResponseLombokPostByIdTest response = step("GET /posts/20", () ->
+        BaseModel response = step("GET /posts/20", () ->
                 given(jsonPlaceholderRequestSpec)
                         .when()
                         .get("/posts/20")
                         .then()
                         .spec(responseSpec(200))
                         .extract()
-                        .as(ResponseLombokPostByIdTest.class)
+                        .as(BaseModel.class)
         );
 
         step("Проверяем ответ", () -> {
@@ -67,12 +62,12 @@ public class JsonPlaceholderTests extends TestBase{
     @Test
     @DisplayName("Создание нового поста (POST /posts)")
     public void createPostTest() {
-        BodyLombokModelsUpdatePostTest data = new BodyLombokModelsUpdatePostTest();
+        BaseModel data = new BaseModel();
         data.setTitle("Basil post");
         data.setBody("Fata viam invenient.");
         data.setUserId(1);
 
-        ResponceLomboktUpdatePostTest response = step("POST /posts", () ->
+        BaseModel response = step("POST /posts", () ->
                 given(jsonPlaceholderRequestSpec)
                         .body(data)
                         .when()
@@ -80,7 +75,7 @@ public class JsonPlaceholderTests extends TestBase{
                         .then()
                         .spec(responseSpec(201))
                         .extract()
-                        .as(ResponceLomboktUpdatePostTest.class)
+                        .as(BaseModel.class)
         );
 
         step("Проверяем ответ", () -> {
