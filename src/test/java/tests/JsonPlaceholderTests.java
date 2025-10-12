@@ -98,7 +98,7 @@ public class JsonPlaceholderTests extends TestBase{
                         .when()
                         .delete("/posts/1")
                         .then()
-                        .spec(responseSpec(200)) // jsonplaceholder возвращает 200 на DELETE
+                        .spec(responseSpec(200))
         );
     }
 

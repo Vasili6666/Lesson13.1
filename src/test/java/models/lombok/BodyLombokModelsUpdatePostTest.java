@@ -5,8 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 @Data
-@NoArgsConstructor // пустой конструктор
-@AllArgsConstructor // конструктор со всеми полями
+@NoArgsConstructor
+@AllArgsConstructor
 public class BodyLombokModelsUpdatePostTest {
     private int id;
     private String title;
