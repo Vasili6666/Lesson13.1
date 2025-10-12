@@ -1,12 +1,12 @@
 package models.lombok;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor // пустой конструктор
+@AllArgsConstructor // конструктор со всеми полями
 public class BodyLombokModelsUpdatePostTest {
     private int id;
     private String title;

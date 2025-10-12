@@ -3,47 +3,35 @@ package tests;
 import models.lombok.BodyLombokModelsUpdatePostTest;
 import models.lombok.ResponceLomboktUpdatePostTest;
 import models.lombok.ResponseLombokPostByIdTest;
-//import models.lombok.ResponseModelPostByIdTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static helpers.CustomAllureListener.withCustomTemplates;
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static specs.GetUsersSpecs.getUsersRequestSpec;
-import static specs.GetUsersSpecs.getUsersResponseSpec;
-import static specs.PostByIdSpec.postByIdRequestSpec;
-import static specs.PostByIdSpec.postByIdResponseSpec;
-import static specs.UpdatePostSpecs.updatePostRequestSpec;
-import static specs.UpdatePostSpecs.updatePostResponseSpec;
-import static specs.UserByIdSpec.getUserByIdRequestSpec;
-import static specs.UserByIdSpec.getUserByIdResponseSpec;
-import static specs.UserWithWrongIdSpec.getUserWithWrongIdRequestSpec;
-import static specs.UserWithWrongIdSpec.getUserWithWrongIdResponseSpec;
-import static specs.CreatePostSpec.createPostRequestSpec;
-import static specs.CreatePostSpec.createPostResponseSpec;
 
-public class JsonPlaceholderTests {
+import static specs.Specs.jsonPlaceholderRequestSpec;
+import static specs.Specs.responseSpec;
+
+public class JsonPlaceholderTests extends TestBase{
 
     @Test
     @DisplayName("Изменение поста с Lombok (PUT /posts/1)")
     public void lombokUpdatePostTest() {
-        BodyLombokModelsUpdatePostTest data = new BodyLombokModelsUpdatePostTest();
-        data.setId(1);
-        data.setTitle("Basil post updated");
-        data.setBody("Fata viam invenient. (пер. «Судьба найдёт путь.»)");
-        data.setUserId(1);
+        BodyLombokModelsUpdatePostTest data = new BodyLombokModelsUpdatePostTest(1,
+                "Basil post updated",
+                "Fata viam invenient. (пер. «Судьба найдёт путь.»)",
+                1);
 
         ResponceLomboktUpdatePostTest response = step("Выполняем PUT-запрос", () ->
-                given(updatePostRequestSpec)
+                given(jsonPlaceholderRequestSpec)
                         .body(data)
                         .when()
-                        .put()
+                        .put("/posts/1")
                         .then()
-                        .spec(updatePostResponseSpec)
+                        .spec(responseSpec(200))
                         .extract()
                         .as(ResponceLomboktUpdatePostTest.class)
         );
@@ -59,11 +47,11 @@ public class JsonPlaceholderTests {
     @DisplayName("GET поста по ID")
     public void getPostByIdTest() {
         ResponseLombokPostByIdTest response = step("GET /posts/20", () ->
-                given(postByIdRequestSpec)
+                given(jsonPlaceholderRequestSpec)
                         .when()
-                        .get()
+                        .get("/posts/20")
                         .then()
-                        .spec(postByIdResponseSpec)
+                        .spec(responseSpec(200))
                         .extract()
                         .as(ResponseLombokPostByIdTest.class)
         );
@@ -85,13 +73,12 @@ public class JsonPlaceholderTests {
         data.setUserId(1);
 
         ResponceLomboktUpdatePostTest response = step("POST /posts", () ->
-                given(createPostRequestSpec)
-                        //.filter(withCustomTemplates())
+                given(jsonPlaceholderRequestSpec)
                         .body(data)
                         .when()
-                        .post()
+                        .post("/posts")
                         .then()
-                        .spec(createPostResponseSpec)
+                        .spec(responseSpec(201))
                         .extract()
                         .as(ResponceLomboktUpdatePostTest.class)
         );
@@ -107,11 +94,11 @@ public class JsonPlaceholderTests {
     @DisplayName("Удаление поста (DELETE /posts/1)")
     public void deletePostTest() {
         step("DELETE /posts/1", () ->
-                given(updatePostRequestSpec)
+                given(jsonPlaceholderRequestSpec)
                         .when()
-                        .delete()
+                        .delete("/posts/1")
                         .then()
-                        .spec(updatePostResponseSpec)
+                        .spec(responseSpec(200)) // jsonplaceholder возвращает 200 на DELETE
         );
     }
 
@@ -119,13 +106,13 @@ public class JsonPlaceholderTests {
     @DisplayName("Получаем всех пользователей (GET /users)")
     public void getAllUsersTest() {
         step("GET /users", () ->
-                given(getUsersRequestSpec)
+                given(jsonPlaceholderRequestSpec)
                         .when()
-                        .get()
+                        .get("/users")
                         .then()
-                        .spec(getUsersResponseSpec)
+                        .spec(responseSpec(200))
                         .body("$", not(empty()))
-                        .body("id", everyItem(greaterThan(0))) // проверка, что у каждого пользователя id > 0
+                        .body("id", everyItem(greaterThan(0)))
         );
     }
 
@@ -133,12 +120,12 @@ public class JsonPlaceholderTests {
     @DisplayName("Получаем пользователя по ID (GET /users/4)")
     public void getUserByIdTest() {
         step("GET /users/4", () ->
-                given(getUserByIdRequestSpec)
+                given(jsonPlaceholderRequestSpec)
                         .when()
-                        .get()
+                        .get("/users/4")
                         .then()
-                        .spec(getUserByIdResponseSpec)
-                        .body("id", equalTo(4)) // проверка, что id == 4
+                        .spec(responseSpec(200))
+                        .body("id", equalTo(4))
                         .body("$", not(empty()))
         );
     }
@@ -147,12 +134,11 @@ public class JsonPlaceholderTests {
     @DisplayName("Получаем пользователя по неверному ID (GET /users/24)")
     public void getUserWithWrongIdTest() {
         step("GET /users/24", () ->
-                given(getUserWithWrongIdRequestSpec)
+                given(jsonPlaceholderRequestSpec)
                         .when()
-                        .get()
+                        .get("/users/24")
                         .then()
-                        .spec(getUserWithWrongIdResponseSpec)
-                        .statusCode(404) // проверка, что возвращается 404
+                        .spec(responseSpec(404))
         );
     }
 }
